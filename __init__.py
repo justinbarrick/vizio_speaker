@@ -29,49 +29,53 @@ async def call_method(speaker, method, *args):
 
 def setup(hass, config):
     import pyvizio_speaker
-    speaker = pyvizio_speaker.Speaker(config['vizio_speaker']['host'])
+
+    def speaker():
+        return pyvizio_speaker.Speaker(config['vizio_speaker']['host'])
 
     @start_loop
     async def handle_set_input(call):
-        await speaker.set_input(call.data['input'])
+        await speaker().set_input(call.data['input'])
 
     @start_loop
     async def handle_set_volume(call):
-        await speaker.set_volume(call.data['volume'])
+        await speaker().set_volume(call.data['volume'])
 
     @start_loop
     async def handle_volume_up(call):
-        await speaker.volume_down()
+        await speaker().volume_down()
 
     @start_loop
     async def handle_volume_down(call):
-        await speaker.volume_up()
+        await speaker().volume_up()
 
     @start_loop
     async def handle_mute(call):
-        await speaker.mute()
+        await speaker().mute()
 
     @start_loop
     async def handle_unmute(call):
-        await speaker.unmute()
+        await speaker().unmute()
 
     @start_loop
     async def handle_toggle_mute(call):
-        await speaker.mute_toggle()
+        await speaker().mute_toggle()
 
     @start_loop
     async def handle_power_on(call):
-        await speaker.update_power_state()
-        await speaker.power_on()
+        s = speaker()
+        await s.update_power_state()
+        await s.power_on()
 
     @start_loop
     async def handle_power_off(call):
-        await speaker.update_power_state()
-        await speaker.power_off()
+        s = speaker()
+        await s.update_power_state()
+        await s.power_off()
 
     @start_loop
     async def handle_toggle_power(call):
-        await speaker.power_toggle()
+        await speaker().power_toggle()
 
     hass.services.register(SERVICE, 'set_input', handle_set_input)
     hass.services.register(SERVICE, 'set_volume', handle_set_volume)
