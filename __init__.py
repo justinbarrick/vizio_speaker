@@ -35,11 +35,16 @@ def setup(hass, config):
 
     @start_loop
     async def handle_set_input(call):
-        await speaker().set_input(call.data['input'])
+        print(call.data['input'])
+        s = speaker()
+        await s.update_current_input()
+        await s.set_input(call.data['input'])
 
     @start_loop
     async def handle_set_volume(call):
-        await speaker().set_volume(call.data['volume'])
+        s = speaker()
+        await s.update_current_volume()
+        await s.set_volume(call.data['volume'])
 
     @start_loop
     async def handle_volume_up(call):
